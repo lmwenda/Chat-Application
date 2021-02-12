@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react'
+
 import useLocalStorage from '../Storage/useLocalStorage';
 import { useContacts } from "./ContactsContext";
 
@@ -10,13 +11,27 @@ export function useConversations() {
 
 export function ConversationsProvider({ children }) {
     const [conversations, setConversations] = useLocalStorage('conversations', []);
-    const [ selectedConversationIndex, setSelectedConversationIndex ] = useState();
+    const [ selectedConversationIndex, setSelectedConversationIndex ] = useState(0);
     const { contacts } = useContacts();
 
     function createConversation(recipients) {
         setConversations(prevConversations => {
             return [...prevConversations, {recipients, message: []}]
         })
+    }
+
+    function addMessageToConversation({ recipients, text, sender }){
+        let madeChange = false;
+        if(madeChange === true){
+            
+        } else{
+
+        }
+        console.log(recipients, text, sender);
+    }
+
+    function sendMessage(recipients, text){
+        addMessageToConversation({ recipients, text, sender: id});
     }
 
     const formattedConversations = conversations.map((conversation, index) => {
@@ -33,7 +48,9 @@ export function ConversationsProvider({ children }) {
 
     const value = {
         conversations: formattedConversations,
+        selectedConversation: formattedConversations[selectedConversationIndex],
         selectConversationIndex: setSelectedConversationIndex,
+        send: sendMessage,
         createConversation
     }
 

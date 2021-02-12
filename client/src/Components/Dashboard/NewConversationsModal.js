@@ -54,5 +54,4 @@ function NewConversationsModal({ closeModal }){
     );
 }
 
-
 export default NewConversationsModal;
