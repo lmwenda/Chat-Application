@@ -1,15 +1,18 @@
-import React, { useState } from "react";
-import { Form, InputGroup, Button } from "react-bootstrap";
+import React, { useState, useCallback } from 'react'
+import { Form, InputGroup, Button } from 'react-bootstrap'
+import { useConversations } from '../Context/ConversationsContext';
 
-// Context
-import { useConversations } from "../Context/ConversationsContext";
+export default function OpenConversation() {
+    const [text, setText] = useState('')
+    const setRef = useCallback(node => {
+        if (node) {
+            node.scrollIntoView({ smooth: true })
+        }
+    }, [])
+    const { sendMessage, selectedConversation } = useConversations()
 
-function OpenConversation(){
-    const [ text, setText ] = useState('')
-    const { sendMessage, selectedConversation } = useConversations();
-
-    function handleSubmit(event){
-        event.preventDefault()
+    function handleSubmit(e) {
+        e.preventDefault()
 
         sendMessage(
             selectedConversation.recipients.map(r => r.id),
@@ -18,13 +21,15 @@ function OpenConversation(){
         setText('')
     }
 
-    return(
+    return (
         <div className="d-flex flex-column flex-grow-1">
             <div className="flex-grow-1 overflow-auto">
-                <div className="d-flex flex-column align-items-start justify-content-end px-3">
+                <div className="h-100 d-flex flex-column align-items-start justify-content-end px-3 overflow-y-scroll">
                     {selectedConversation.messages.map((message, index) => {
+                        const lastMessage = selectedConversation.messages.length - 1 === index
                         return (
                             <div
+                                ref={lastMessage ? setRef : null}
                                 key={index}
                                 className={`my-1 d-flex flex-column ${message.fromMe ? 'align-self-end align-items-end' : 'align-items-start'}`}
                             >
@@ -41,16 +46,15 @@ function OpenConversation(){
                 </div>
             </div>
             <Form onSubmit={handleSubmit}>
-                <Form.Group className="my-2">
+                <Form.Group className="m-2">
                     <InputGroup>
                         <Form.Control
                             as="textarea"
                             required
                             value={text}
                             onChange={e => setText(e.target.value)}
-                            style={{height: '75px', resize: 'none'}}
+                            style={{ height: '75px', resize: 'none' }}
                         />
-
                         <InputGroup.Append>
                             <Button type="submit">Send</Button>
                         </InputGroup.Append>
@@ -58,7 +62,5 @@ function OpenConversation(){
                 </Form.Group>
             </Form>
         </div>
-    );
+    )
 }
-
-export default OpenConversation;

@@ -32,7 +32,7 @@ export function ConversationsProvider({ children, id }) {
                     madeChange = true;
                     return {
                         ...conversation,
-                        messages: [ ...conversation.message, newMessage ]
+                        messages: [ ...conversation.messages, newMessage ]
                     }
                 }
             })
@@ -40,7 +40,7 @@ export function ConversationsProvider({ children, id }) {
                 // Returning the Main Goal
                 return newConversations;
             }
-             else{
+            else{
                 return[
                     ...prevConversations,
                     { recipients, messages: [ newMessage ] }
