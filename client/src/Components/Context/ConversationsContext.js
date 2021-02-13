@@ -9,7 +9,8 @@ export function useConversations() {
     return useContext(ConversationsContext)
 }
 
-export function ConversationsProvider({ children }) {
+// Conversations Context Provider
+export function ConversationsProvider({ children, id }) {
     const [conversations, setConversations] = useLocalStorage('conversations', []);
     const [ selectedConversationIndex, setSelectedConversationIndex ] = useState(0);
     const { contacts } = useContacts();
@@ -21,13 +22,31 @@ export function ConversationsProvider({ children }) {
     }
 
     function addMessageToConversation({ recipients, text, sender }){
-        let madeChange = false;
-        if(madeChange === true){
-            
-        } else{
-
-        }
-        console.log(recipients, text, sender);
+        setConversations(prevConversations => {
+            let madeChange = false;
+            const newMessage = {sender, text};
+            const newConversations = prevConversations.map(conversation => {
+                if (arrayEquality(conversation.recipients, recipients)){
+                    // Array Equality Login for Attributes Equal from 'conversations.recipients
+                    // to 'recipients' which is the current one
+                    madeChange = true;
+                    return {
+                        ...conversation,
+                        messages: [ ...conversation.message, newMessage ]
+                    }
+                }
+            })
+            if(madeChange === true){
+                // Returning the Main Goal
+                return newConversations;
+            }
+             else{
+                return[
+                    ...prevConversations,
+                    { recipients, messages: [ newMessage ] }
+                ]
+            }
+        })
     }
 
     function sendMessage(recipients, text){
@@ -59,4 +78,15 @@ export function ConversationsProvider({ children }) {
             {children}
         </ConversationsContext.Provider>
     );
+}
+
+function arrayEquality(a, b){
+    if(a.length !== b.length) return false;
+
+    a.sort();
+    b.sort();
+
+    return a.every((element, index) => {
+        return element === b[index];
+    })
 }
