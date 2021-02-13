@@ -1,2 +1,2 @@
 # Chat-Application
- A Chat Application whihc I call Chatify
+ A Chat Application which I call Chatify
