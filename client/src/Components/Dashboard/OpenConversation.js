@@ -6,20 +6,39 @@ import { useConversations } from "../Context/ConversationsContext";
 
 function OpenConversation(){
     const [ text, setText ] = useState('')
-    const { send, selectedConversation } = useConversations();
+    const { sendMessage, selectedConversation } = useConversations();
 
     function handleSubmit(event){
-        event.preventDefault();
-        send(
+        event.preventDefault()
+
+        sendMessage(
             selectedConversation.recipients.map(r => r.id),
             text
-        );
+        )
+        setText('')
     }
 
     return(
         <div className="d-flex flex-column flex-grow-1">
             <div className="flex-grow-1 overflow-auto">
-
+                <div className="d-flex flex-column align-items-start justify-content-end px-3">
+                    {selectedConversation.messages.map((message, index) => {
+                        return (
+                            <div
+                                key={index}
+                                className={`my-1 d-flex flex-column ${message.fromMe ? 'align-self-end align-items-end' : 'align-items-start'}`}
+                            >
+                                <div
+                                    className={`rounded px-2 py-1 ${message.fromMe ? 'bg-primary text-white' : 'border'}`}>
+                                    {message.text}
+                                </div>
+                                <div className={`text-muted small ${message.fromMe ? 'text-right' : ''}`}>
+                                    {message.fromMe ? 'You' : message.senderName}
+                                </div>
+                            </div>
+                        )
+                    })}
+                </div>
             </div>
             <Form onSubmit={handleSubmit}>
                 <Form.Group className="my-2">
